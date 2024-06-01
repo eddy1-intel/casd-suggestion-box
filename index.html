@@ -97,14 +97,14 @@
 </head>
 <body>
     <video id="introVideo" autoplay muted>
-        <source src="starter.mp4" type="video/mp4"> <!-- Replace with the actual URL of the Starter video -->
+        <source src="starter.mp4" type="video/mp4"> <!-- This path assumes the video is in the root of the repository -->
         Your browser does not support the video tag.
     </video>
 
     <div class="container" id="formContainer">
         <h1>CASD Suggestion Box</h1>
         <p>We value your feedback! Please leave your suggestions below.</p>
-        <form action="mailto:Award@tql.com" method="post" enctype="text/plain">
+        <form action="https://formspree.io/f/your-form-id" method="post"> <!-- Replace with your Formspree form ID -->
             <label for="name">Your Name (optional):</label>
             <input type="text" id="name" name="name">
 
@@ -123,7 +123,7 @@
                 <label for="anonymous">Send Anonymously</label>
             </div>
             
-            <button type="submit" onclick="submitForm()">Submit</button>
+            <button type="submit">Submit</button>
         </form>
     </div>
 
@@ -132,24 +132,6 @@
             document.getElementById('formContainer').style.display = 'block';
             this.style.display = 'none';
         });
-
-        function submitForm() {
-            const form = document.querySelector('form');
-            const suggestion = document.getElementById('suggestion').value;
-            const category = document.getElementById('category').value;
-            const name = document.getElementById('name').value;
-            const anonymous = document.getElementById('anonymous').checked;
-            const recipients = 'Award@tql.com,eddyappl@gmail.com,eddyayuketah@gmail.com';
-            
-            let bodyContent = 'Suggestion: ' + suggestion + '\n\nCategory: ' + category;
-            if (!anonymous && name) {
-                bodyContent += '\n\nName: ' + name;
-            }
-
-            form.action = `mailto:${recipients}?subject=Suggestion&body=${encodeURIComponent(bodyContent)}`;
-            form.submit();
-            form.reset();
-        }
     </script>
 </body>
 </html>
