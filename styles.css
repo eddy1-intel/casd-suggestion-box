@@ -312,3 +312,63 @@ footer {
     margin-left: 40px;
 }
 
+/* Previous CSS remains the same */
+
+.incident-examples-section {
+    margin-top: 40px;
+    padding: 40px 20px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    position: relative;
+}
+
+#incident-list {
+    flex-grow: 1;
+    overflow-y: auto;
+    max-height: 400px;
+}
+
+.incident-example {
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.incident-example[data-severity="1"] {
+    background-color: #ffcccc;
+    border-left: 10px solid #ff0000;
+}
+
+.incident-example[data-severity="2"] {
+    background-color: #fff5cc;
+    border-left: 10px solid #ffcc00;
+}
+
+.incident-example[data-severity="3"] {
+    background-color: #ccffcc;
+    border-left: 10px solid #00cc00;
+}
+
+.comments-section {
+    margin-top: 10px;
+}
+
+.comment-box {
+    width: 100%;
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+#incident-chart {
+    margin-left: 40px;
+    max-width: 300px;
+    max-height: 300px;
+}
+
