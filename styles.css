@@ -418,3 +418,44 @@ footer {
     transition: background-color 0.3s;
     align-self: flex-start; /* Ensures the button is also aligned to the left */
 }
+
+
+
+
+
+
+
+/* Button styles */
+.log-form button {
+    padding: 8px 16px; /* Reduced padding */
+    font-size: 14px;   /* Reduced font size */
+    width: auto;       /* Set width to auto to make it smaller */
+    max-width: 200px;  /* Optional: limit the maximum width */
+    align-self: flex-start; /* Align buttons to the left */
+}
+
+/* Start Recording button specific styles */
+#start-recording {
+    background-color: #007acc;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+#start-recording:hover {
+    background-color: #005fa3;
+}
+
+/* Submit Incident button specific styles */
+#submit-log {
+    background-color: #005fa3;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+#submit-log:hover {
+    background-color: #003d73;
+}
