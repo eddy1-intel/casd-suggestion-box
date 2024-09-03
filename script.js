@@ -85,7 +85,8 @@ function addIncidentToList(incident) {
     });
 
     incidentElement.querySelector('.escalate-button').addEventListener('click', () => {
-        escalateIncident(incident);
+        const comment = incidentElement.querySelector('.comment-box').value;
+        escalateIncident(incident, comment);
     });
 }
 
@@ -140,11 +141,12 @@ function removeIncident(id, severity) {
     localStorage.setItem('incidents', JSON.stringify(incidents));
 }
 
-function escalateIncident(incident) {
+function escalateIncident(incident, comment) {
     const emailContent = `
         Incident Summary:
         Severity: ${getSeverityLabel(incident.severity)}
         Description: ${incident.description}
+        Comment: ${comment || "No comments added."}
         Voice Message: ${incident.voiceMessage ? 'Yes' : 'No'}
         Screenshot: ${incident.screenshot ? 'Yes' : 'No'}
     `;
@@ -174,7 +176,7 @@ function openIncidentInNewTab(incident) {
                 <div class="review-options">
                     <button class="reviewed-button" onclick="window.opener.removeIncident(${incident.id}, ${incident.severity}); window.close();">Reviewed</button>
                     <button class="check-later-button" onclick="alert('Marked for later review');">Check Later</button>
-                    <button class="escalate-button" onclick="window.opener.escalateIncident(${JSON.stringify(incident)});">Escalate</button>
+                    <button class="escalate-button" onclick="window.opener.escalateIncident(${JSON.stringify(incident)}, document.querySelector('.comment-box').value);">Escalate</button>
                 </div>
             </div>
         </body>
@@ -228,3 +230,15 @@ stopRecordingButton.addEventListener('click', () => {
         stopRecordingButton.disabled = true;
     }
 });
+
+// Add delete option for the voice recording
+function deleteRecording() {
+    audioPlayback.src = '';
+    audioChunks = [];
+}
+
+const deleteRecordingOption = document.createElement('button');
+deleteRecordingOption.innerText = 'Delete Recording';
+deleteRecordingOption.addEventListener('click', deleteRecording);
+
+document.querySelector('.log-form').appendChild(deleteRecordingOption);
