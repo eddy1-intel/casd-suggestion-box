@@ -27,6 +27,20 @@ const incidentSeverityInput = document.getElementById('incident-severity');
 const audioPlayback = document.getElementById('audio-playback');
 const screenshotPreview = document.getElementById('screenshot-preview');
 
+// Handle screenshot upload and display in the incident example section
+const screenshotUpload = document.getElementById('screenshot-upload');
+
+screenshotUpload.addEventListener('change', () => {
+    const file = screenshotUpload.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            screenshotPreview.innerHTML = `<img src="${e.target.result}" alt="Screenshot" style="max-width: 100%; max-height: 150px; display: block; margin-top: 10px;">`;
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
 submitLogButton.addEventListener('click', () => {
     const description = incidentDetailsInput.value;
     const severity = incidentSeverityInput.value;
@@ -49,6 +63,7 @@ submitLogButton.addEventListener('click', () => {
     clearForm();
 });
 
+// Function to add an incident to the list and display it on the page
 function addIncidentToList(incident) {
     const incidentElement = document.createElement('div');
     incidentElement.className = 'incident-example';
@@ -60,7 +75,7 @@ function addIncidentToList(incident) {
         <p>${incident.description}</p>
         <div class="incident-assets">
             ${incident.voiceMessage ? `<audio controls src="${incident.voiceMessage}"></audio>` : ''}
-            ${incident.screenshot}
+            ${incident.screenshot ? incident.screenshot : ''}
         </div>
         <div class="comments-section">
             <textarea class="comment-box" placeholder="Add a comment..."></textarea>
@@ -90,12 +105,14 @@ function addIncidentToList(incident) {
     });
 }
 
+// Function to get severity label based on the severity level
 function getSeverityLabel(severity) {
     if (severity == 1) return "Top Priority (Red Flag)";
     if (severity == 2) return "Secondary Priority (Yellow Flag)";
     return "Lowest Priority (Green Flag)";
 }
 
+// Function to clear the form after submission
 function clearForm() {
     incidentDetailsInput.value = '';
     incidentSeverityInput.value = '1';
@@ -103,6 +120,7 @@ function clearForm() {
     audioPlayback.src = '';
 }
 
+// Function to update the chart displaying the number of incidents per severity level
 function updateChart() {
     const chartData = [
         incidents[1].length,
@@ -136,11 +154,13 @@ function updateChart() {
     }
 }
 
+// Function to remove an incident from the list
 function removeIncident(id, severity) {
     incidents[severity] = incidents[severity].filter(incident => incident.id !== id);
     localStorage.setItem('incidents', JSON.stringify(incidents));
 }
 
+// Function to handle the escalation of an incident, including the screenshot and comment
 function escalateIncident(incident, comment) {
     const emailContent = `
         Incident Summary:
@@ -148,12 +168,17 @@ function escalateIncident(incident, comment) {
         Description: ${incident.description}
         Comment: ${comment || "No comments added."}
         Voice Message: ${incident.voiceMessage ? 'Yes' : 'No'}
-        Screenshot: ${incident.screenshot ? 'Yes' : 'No'}
+        Screenshot: ${incident.screenshot ? 'Yes (see attached)' : 'No'}
     `;
 
-    window.open(`mailto:eddy1.ayuketah@intel.com?subject=Incident Escalation&body=${encodeURIComponent(emailContent)}`);
+    const mailtoLink = `mailto:eddy1.ayuketah@intel.com?subject=Incident Escalation&body=${encodeURIComponent(emailContent)}`;
+    const a = document.createElement('a');
+    a.href = mailtoLink;
+    a.target = '_blank';
+    a.click();
 }
 
+// Function to open the incident details in a new tab
 function openIncidentInNewTab(incident) {
     const incidentWindow = window.open('', '_blank');
     incidentWindow.document.write(`
@@ -168,7 +193,7 @@ function openIncidentInNewTab(incident) {
                 <p>${incident.description}</p>
                 <div class="incident-assets">
                     ${incident.voiceMessage ? `<audio controls src="${incident.voiceMessage}"></audio>` : ''}
-                    ${incident.screenshot}
+                    ${incident.screenshot ? incident.screenshot : ''}
                 </div>
                 <div class="comments-section">
                     <textarea class="comment-box" placeholder="Add a comment..."></textarea>
