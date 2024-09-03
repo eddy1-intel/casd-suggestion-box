@@ -156,21 +156,26 @@ function openIncidentInNewTab(incident) {
     const incidentWindow = window.open('', '_blank');
     incidentWindow.document.write(`
         <html>
-        <head><title>Incident Details</title></head>
+        <head>
+            <title>Incident Details</title>
+            <link rel="stylesheet" href="styles.css">
+        </head>
         <body>
-            <h2>${getSeverityLabel(incident.severity)}</h2>
-            <p>${incident.description}</p>
-            <div>
-                ${incident.voiceMessage ? `<audio controls src="${incident.voiceMessage}"></audio>` : ''}
-                ${incident.screenshot}
-            </div>
-            <div>
-                <textarea class="comment-box" placeholder="Add a comment..."></textarea>
-            </div>
-            <div>
-                <button onclick="window.opener.removeIncident(${incident.id}, ${incident.severity}); window.close();">Reviewed</button>
-                <button onclick="alert('Marked for later review');">Check Later</button>
-                <button onclick="window.opener.escalateIncident(${JSON.stringify(incident)});">Escalate</button>
+            <div class="incident-log-section">
+                <h2>${getSeverityLabel(incident.severity)}</h2>
+                <p>${incident.description}</p>
+                <div class="incident-assets">
+                    ${incident.voiceMessage ? `<audio controls src="${incident.voiceMessage}"></audio>` : ''}
+                    ${incident.screenshot}
+                </div>
+                <div class="comments-section">
+                    <textarea class="comment-box" placeholder="Add a comment..."></textarea>
+                </div>
+                <div class="review-options">
+                    <button class="reviewed-button" onclick="window.opener.removeIncident(${incident.id}, ${incident.severity}); window.close();">Reviewed</button>
+                    <button class="check-later-button" onclick="alert('Marked for later review');">Check Later</button>
+                    <button class="escalate-button" onclick="window.opener.escalateIncident(${JSON.stringify(incident)});">Escalate</button>
+                </div>
             </div>
         </body>
         </html>
@@ -181,4 +186,45 @@ function openIncidentInNewTab(incident) {
 document.addEventListener('DOMContentLoaded', () => {
     Object.values(incidents).flat().forEach(addIncidentToList);
     updateChart();
+});
+
+// Voice Recording Functionality
+let mediaRecorder;
+let audioChunks = [];
+
+const startRecordingButton = document.getElementById('start-recording');
+const stopRecordingButton = document.getElementById('stop-recording');
+
+startRecordingButton.addEventListener('click', async () => {
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+
+        mediaRecorder.start();
+        audioChunks = [];
+
+        mediaRecorder.addEventListener('dataavailable', event => {
+            audioChunks.push(event.data);
+        });
+
+        mediaRecorder.addEventListener('stop', () => {
+            const audioBlob = new Blob(audioChunks);
+            const audioUrl = URL.createObjectURL(audioBlob);
+            audioPlayback.src = audioUrl;
+        });
+
+        startRecordingButton.disabled = true;
+        stopRecordingButton.disabled = false;
+    } catch (error) {
+        console.error('Error accessing media devices:', error);
+        alert('Could not start recording: ' + error.message);
+    }
+});
+
+stopRecordingButton.addEventListener('click', () => {
+    if (mediaRecorder) {
+        mediaRecorder.stop();
+        startRecordingButton.disabled = false;
+        stopRecordingButton.disabled = true;
+    }
 });
