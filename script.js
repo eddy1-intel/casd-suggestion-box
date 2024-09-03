@@ -117,12 +117,36 @@ function addIncidentToList(details, severity) {
     incidentElement.innerHTML = `
         <h4>${getSeverityLabel(severity)}</h4>
         <p>${details}</p>
+        <div class="incident-assets">
+            <audio controls src="${audioPlayback.src}"></audio>
+            ${screenshotPreview.innerHTML ? screenshotPreview.innerHTML : ''}
+        </div>
         <div class="comments-section">
             <textarea class="comment-box" placeholder="Add a comment..."></textarea>
         </div>
+        <div class="review-options">
+            <button class="reviewed-button">Reviewed</button>
+            <button class="check-later-button">Check Later</button>
+        </div>
     `;
-    
+
     incidentList.appendChild(incidentElement);
+
+    // Add event listeners for the buttons
+    incidentElement.querySelector('.reviewed-button').addEventListener('click', () => {
+        incidentElement.remove();
+        incidents[severity]--;
+        updateChart();
+    });
+
+    incidentElement.querySelector('.check-later-button').addEventListener('click', () => {
+        // Placeholder for any additional functionality for "Check Later"
+        alert("Incident marked for later review.");
+    });
+
+    incidentElement.addEventListener('click', () => {
+        alert("Incident clicked: " + details);
+    });
 }
 
 function getSeverityLabel(severity) {
@@ -163,3 +187,27 @@ function updateChart() {
     incidentChart.data.datasets[0].data = [incidents[1], incidents[2], incidents[3]];
     incidentChart.update();
 }
+
+// PDF download functionality using jsPDF
+document.getElementById('download-pdf').addEventListener('click', () => {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    doc.text("Incident Examples", 10, 10);
+    
+    let yOffset = 20;
+    
+    document.querySelectorAll('.incident-example').forEach((incident, index) => {
+        const text = incident.querySelector('h4').textContent + ": " + incident.querySelector('p').textContent;
+        doc.text(text, 10, yOffset);
+        yOffset += 10;
+        
+        // Adding a placeholder for assets (audio, images) in PDF
+        if (incident.querySelector('.incident-assets').innerHTML) {
+            doc.text("Assets (voice/screenshots) attached.", 10, yOffset);
+            yOffset += 10;
+        }
+    });
+    
+    doc.save('incident-examples.pdf');
+});
