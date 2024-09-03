@@ -26,6 +26,7 @@ const incidentDetailsInput = document.getElementById('incident-details');
 const incidentSeverityInput = document.getElementById('incident-severity');
 const audioPlayback = document.getElementById('audio-playback');
 const screenshotPreview = document.getElementById('screenshot-preview');
+const downloadPdfButton = document.getElementById('download-pdf');
 
 // Handle screenshot upload and display in the incident example section
 const screenshotUpload = document.getElementById('screenshot-upload');
@@ -61,6 +62,7 @@ submitLogButton.addEventListener('click', () => {
     addIncidentToList(incidentData);
     updateChart();
     clearForm();
+    togglePdfButtonState();
 });
 
 // Function to add an incident to the list and display it on the page
@@ -97,6 +99,7 @@ function addIncidentToList(incident) {
         removeIncident(incident.id, incident.severity);
         incidentElement.remove();
         updateChart();
+        togglePdfButtonState();
     });
 
     incidentElement.querySelector('.escalate-button').addEventListener('click', () => {
@@ -168,14 +171,26 @@ function escalateIncident(incident, comment) {
         Description: ${incident.description}
         Comment: ${comment || "No comments added."}
         Voice Message: ${incident.voiceMessage ? 'Yes' : 'No'}
-        Screenshot: ${incident.screenshot ? 'Yes (see attached)' : 'No'}
+        Screenshot: ${incident.screenshot ? 'See attached image' : 'No'}
     `;
 
     const mailtoLink = `mailto:eddy1.ayuketah@intel.com?subject=Incident Escalation&body=${encodeURIComponent(emailContent)}`;
-    const a = document.createElement('a');
-    a.href = mailtoLink;
-    a.target = '_blank';
-    a.click();
+    
+    if (incident.screenshot) {
+        const newTab = window.open();
+        newTab.document.write(`
+            <html>
+            <body>
+                <h3>Right-click the image below to save and manually attach it to your email:</h3>
+                ${incident.screenshot}
+                <br><br>
+                <a href="${mailtoLink}" target="_blank">Click here to send the email</a>
+            </body>
+            </html>
+        `);
+    } else {
+        window.location.href = mailtoLink;
+    }
 }
 
 // Function to open the incident details in a new tab
@@ -213,6 +228,7 @@ function openIncidentInNewTab(incident) {
 document.addEventListener('DOMContentLoaded', () => {
     Object.values(incidents).flat().forEach(addIncidentToList);
     updateChart();
+    togglePdfButtonState();
 });
 
 // Voice Recording Functionality
@@ -267,3 +283,39 @@ deleteRecordingOption.innerText = 'Delete Recording';
 deleteRecordingOption.addEventListener('click', deleteRecording);
 
 document.querySelector('.log-form').appendChild(deleteRecordingOption);
+
+// Toggle the PDF button state based on whether there are incidents
+function togglePdfButtonState() {
+    const hasIncidents = Object.values(incidents).flat().length > 0;
+    downloadPdfButton.disabled = !hasIncidents;
+}
+
+// PDF download functionality using jsPDF
+downloadPdfButton.addEventListener('click', () => {
+    if (Object.values(incidents).flat().length === 0) return;
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    doc.text("Incident Examples", 10, 10);
+    
+    let yOffset = 20;
+    
+    document.querySelectorAll('.incident-example').forEach((incident, index) => {
+        const text = `${incident.querySelector('h4').textContent}: ${incident.querySelector('p').textContent}`;
+        doc.text(text, 10, yOffset);
+        yOffset += 10;
+
+        const commentText = incident.querySelector('.comment-box').value || "No comments added.";
+        doc.text("Comment: " + commentText, 10, yOffset);
+        yOffset += 10;
+
+        if (incident.querySelector('.incident-assets img')) {
+            const imgData = incident.querySelector('.incident-assets img').src;
+            doc.addImage(imgData, 'PNG', 10, yOffset, 50, 50);
+            yOffset += 60;
+        }
+    });
+    
+    doc.save('incident-examples.pdf');
+});
