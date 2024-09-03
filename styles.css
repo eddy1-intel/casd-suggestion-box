@@ -459,3 +459,31 @@ footer {
 #submit-log:hover {
     background-color: #003d73;
 }
+/* Button styles */
+.review-options button {
+    padding: 6px 12px;
+    font-size: 12px;
+    margin-right: 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    border: none;
+}
+
+.reviewed-button {
+    background-color: #28a745; /* Green for reviewed */
+    color: white;
+}
+
+.check-later-button {
+    background-color: #ffc107; /* Yellow for check later */
+    color: white;
+}
+
+.escalate-button {
+    background-color: #dc3545; /* Red for escalate */
+    color: white;
+}
+
+.review-options {
+    margin-top: 10px;
+}
