@@ -88,3 +88,78 @@ featureButtons.forEach(button => {
         featureDescription.innerHTML = `<p>${featureDescriptions[featureKey]}</p>`;
     });
 });
+
+// Incident logging and display functionality
+let incidents = {1: 0, 2: 0, 3: 0}; // Track the number of incidents by severity
+
+const incidentList = document.getElementById('incident-list');
+const submitLogButton = document.getElementById('submit-log');
+const incidentDetailsInput = document.getElementById('incident-details');
+const incidentSeverityInput = document.getElementById('incident-severity');
+
+submitLogButton.addEventListener('click', () => {
+    const details = incidentDetailsInput.value;
+    const severity = incidentSeverityInput.value;
+    
+    if (details) {
+        incidents[severity]++;
+        addIncidentToList(details, severity);
+        updateChart();
+        clearForm();
+    }
+});
+
+function addIncidentToList(details, severity) {
+    const incidentElement = document.createElement('div');
+    incidentElement.className = 'incident-example';
+    incidentElement.setAttribute('data-severity', severity);
+    
+    incidentElement.innerHTML = `
+        <h4>${getSeverityLabel(severity)}</h4>
+        <p>${details}</p>
+        <div class="comments-section">
+            <textarea class="comment-box" placeholder="Add a comment..."></textarea>
+        </div>
+    `;
+    
+    incidentList.appendChild(incidentElement);
+}
+
+function getSeverityLabel(severity) {
+    if (severity == 1) return "Top Priority (Red Flag)";
+    if (severity == 2) return "Secondary Priority (Yellow Flag)";
+    return "Lowest Priority (Green Flag)";
+}
+
+function clearForm() {
+    incidentDetailsInput.value = '';
+    incidentSeverityInput.value = '1';
+    screenshotPreview.innerHTML = '';
+    audioPlayback.src = '';
+}
+
+// Chart.js for the pie chart
+const ctxChart = document.getElementById('incident-chart').getContext('2d');
+let incidentChart = new Chart(ctxChart, {
+    type: 'pie',
+    data: {
+        labels: ['Top Priority', 'Secondary Priority', 'Lowest Priority'],
+        datasets: [{
+            data: [0, 0, 0],
+            backgroundColor: ['#ff0000', '#ffcc00', '#00cc00']
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'right',
+            },
+        }
+    },
+});
+
+function updateChart() {
+    incidentChart.data.datasets[0].data = [incidents[1], incidents[2], incidents[3]];
+    incidentChart.update();
+}
