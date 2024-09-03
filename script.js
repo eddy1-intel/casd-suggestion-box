@@ -1,4 +1,24 @@
 document.addEventListener('DOMContentLoaded', function() {
+
+
+    const canvas = document.getElementById('canvas3d');
+    const ctx = canvas.getContext('2d');
+    let angle = 0;
+
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.save();
+        ctx.translate(canvas.width / 2, canvas.height / 2);
+        ctx.rotate(angle);
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+        ctx.fillRect(-50, -50, 100, 100);
+        ctx.restore();
+        angle += 0.01;
+        requestAnimationFrame(draw);
+    }
+
+    draw();
+
     let incidents = JSON.parse(localStorage.getItem('incidents')) || { 1: [], 2: [], 3: [] };
     let watchlist = JSON.parse(localStorage.getItem('watchlist')) || { reviewed: 0, escalated: 0, checkLater: 0 };
 
@@ -171,6 +191,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     ${incident.screenshot}
                     <br><br>
                     <a href="${mailtoLink}" target="_blank">Click here to send the email</a>
+                    <button onclick="window.location.href='${mailtoLink}'">Send Email</button>
                 </body>
                 </html>
             `);
