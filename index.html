@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OTF Production Platform</title>
+    <title>EMA Limited - Shift Handover Platform</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>Intel Corporation</h1>
-            <h2>Pass down platform</h2>
+            <h1>EMA Limited</h2>
+            <h2>Futuristic Shift Handover Platform</h2>
         </header>
         
         <section class="hero">
             <div class="hero-content">
-                <h3>Welcome to the Future of Shift Management @ INTC</h3>
-                <p>Streamline your operations with this cutting-edge platform designed for seamless shift handovers.</p>
+                <h3>Welcome to the Future of Shift Management</h3>
+                <p>Streamline your operations with our cutting-edge platform designed for seamless shift handovers.</p>
                 <a href="#features" class="cta-button">Explore Features</a>
             </div>
             <div class="hero-3d">
@@ -35,7 +35,7 @@
                 <button class="feature-button" data-feature="voice-screenshot-logging">Voice & Screenshot Logging</button>
             </div>
             <div id="feature-description">
-                <!-- Description of the selected feature SHOULD appear here -->
+                <!-- Description of the selected feature will appear here -->
             </div>
         </section>
         
@@ -67,24 +67,15 @@
 
         <section id="incident-examples" class="incident-examples-section">
             <h3>Incident Examples</h3>
-            <div class="incident-example" data-severity="1">
-                <h4>Top Priority (Red Flag)</h4>
-                <p>Critical system failure impacting production. Immediate resolution required.</p>
-            </div>
-            <div class="incident-example" data-severity="2">
-                <h4>Secondary Priority (Yellow Flag)</h4>
-                <p>Minor tool malfunction that requires attention but does not halt production.</p>
-            </div>
-            <div class="incident-example" data-severity="3">
-                <h4>Lowest Priority (Green Flag)</h4>
-                <p>Routine maintenance needed, not urgent.</p>
-            </div>
+            <div id="incident-list"></div>
+            <canvas id="incident-chart" width="400" height="400"></canvas>
         </section>
 
         <footer>
-            <p>© 2024 Intel Corporation. All Rights Reserved.</p>
+            <p>© 2024 EMA Limited. All Rights Reserved.</p>
         </footer>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
