@@ -130,8 +130,6 @@
 
 
 
-
-
 document.addEventListener('DOMContentLoaded', function() {
     let incidents = JSON.parse(localStorage.getItem('incidents')) || { 1: [], 2: [], 3: [] };
     let watchlist = JSON.parse(localStorage.getItem('watchlist')) || { reviewed: 0, escalated: 0, checkLater: 0 };
@@ -154,10 +152,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const logDate = document.getElementById('log-date');
 
     // Handle access modal submission
-    accessSubmitButton.addEventListener('click', () => {
+    accessSubmitButton.addEventListener('click', function() {
         const role = roleSelect.value;
         const date = dateInput.value;
 
+        // Check if both role and date have been selected/entered
         if (role && date) {
             userRole.innerHTML = `Role: ${role}`;
             logDate.innerHTML = `Date: ${date}`;
@@ -170,6 +169,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Incident logging and other functionalities continue here (unchanged from the previous code)
-    // Rest of your existing script.js code remains unchanged.
+    // Continue with the rest of the JavaScript as usual
+    // Incident logging and other functionalities continue here
+    // All other features and original script.js code should remain unchanged
+
 });
+
