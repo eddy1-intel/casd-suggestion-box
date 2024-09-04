@@ -31,6 +31,36 @@ document.addEventListener('DOMContentLoaded', function() {
     const downloadPdfButton = document.getElementById('download-pdf');
     const watchlistContainer = document.getElementById('watchlist');
 
+
+    const accessModal = document.getElementById('accessModal');
+    const roleSelect = document.getElementById('role-select');
+    const dateInput = document.getElementById('date-input');
+    const accessSubmitButton = document.getElementById('accessSubmit');
+    const mainContainer = document.getElementById('main-container');
+    const userRole = document.getElementById('user-role');
+    const logDate = document.getElementById('log-date');
+
+    // Handle access modal submission
+    accessSubmitButton.addEventListener('click', function() {
+        const role = roleSelect.value;
+        const date = dateInput.value;
+
+            // check if the role has been selected/ entered 
+        if (role && date) {
+            userRole.innerHTML = `Role: ${role}`;
+            logDate.innerHTML = `Date: ${date}`;
+
+            // Hide the modal and show the main content
+            accessModal.style.display = 'none';
+            mainContainer.style.display = 'block';
+        } else {
+            alert('Please select a role and enter a valid date.');
+        }
+    });
+
+    // Incident logging and other functionalities continue here (unchanged from the previous code)
+    
+
     // Handle screenshot upload and display
     const screenshotUpload = document.getElementById('screenshot-upload');
     screenshotUpload.addEventListener('change', () => {
@@ -216,14 +246,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         ${incident.voiceMessage ? `<audio controls src="${incident.voiceMessage}"></audio>` : ''}
                         ${incident.screenshot ? `<img src="${incident.screenshot.match(/src="([^"]*)"/)[1]}" alt="Screenshot" style="max-width: 100%; max-height: 500px;">` : ''}
                     </div>
-                    <div class="comments-section">
-                        <textarea class="comment-box" placeholder="Add a comment..."></textarea>
-                    </div>
-                    <div class="review-options">
-                        <button class="reviewed-button" onclick="window.opener.removeIncident(${incident.id}, ${incident.severity}); window.opener.watchlist.reviewed += 1; window.opener.updateWatchlist(); window.close();">Reviewed</button>
-                        <button class="check-later-button" onclick="window.opener.watchlist.checkLater += 1; window.opener.updateWatchlist(); alert('Marked for later review.');">Check Later</button>
-                        <button class="escalate-button" onclick="window.opener.escalateIncident(${JSON.stringify(incident)}, document.querySelector('.comment-box').value); window.opener.watchlist.escalated += 1; window.opener.updateWatchlist();">Escalate</button>
-                    </div>
+                    
                 </div>
             </body>
             </html>
@@ -314,7 +337,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
         
-        doc.text("Incident Examples", 10, 10);
+        doc.text("Incident List", 10, 10);
         
         let yOffset = 20;
         
