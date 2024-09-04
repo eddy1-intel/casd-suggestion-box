@@ -1,22 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-
-    const canvas = document.getElementById('canvas3d');
-    const ctx = canvas.getContext('2d');
-    let angle = 0;
-
-    function draw() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.save();
-        ctx.translate(canvas.width / 2, canvas.height / 2);
-        ctx.rotate(angle);
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-        ctx.fillRect(-50, -50, 100, 100);
-        ctx.restore();
-        angle += 0.01;
-        requestAnimationFrame(draw);
-    }
-
-    draw();
     let incidents = JSON.parse(localStorage.getItem('incidents')) || { 1: [], 2: [], 3: [] };
     let watchlist = JSON.parse(localStorage.getItem('watchlist')) || { reviewed: 0, escalated: 0, checkLater: 0 };
 
@@ -60,7 +42,43 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Function to add incidents to the list
+    // Handle screenshot upload and display
+    const screenshotUpload = document.getElementById('screenshot-upload');
+    screenshotUpload.addEventListener('change', () => {
+        const file = screenshotUpload.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                screenshotPreview.innerHTML = `<img src="${e.target.result}" alt="Screenshot" style="max-width: 100%; max-height: 150px; display: block; margin-top: 10px;">`;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Add an incident
+    submitLogButton.addEventListener('click', () => {
+        const description = incidentDetailsInput.value;
+        const severity = incidentSeverityInput.value;
+        const voiceMessage = audioPlayback.src;
+        const screenshot = screenshotPreview.innerHTML;
+
+        const incidentData = {
+            id: new Date().getTime(),
+            description,
+            severity,
+            voiceMessage,
+            screenshot
+        };
+
+        incidents[severity].push(incidentData);
+        localStorage.setItem('incidents', JSON.stringify(incidents));
+
+        addIncidentToList(incidentData);
+        updateChart();
+        clearForm();
+        togglePdfButtonState();
+    });
+
     function addIncidentToList(incident) {
         const incidentElement = document.createElement('div');
         incidentElement.className = 'incident-example';
@@ -234,12 +252,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Load incidents and watchlist data from localStorage on page load
-    document.addEventListener('DOMContentLoaded', () => {
-        Object.values(incidents).flat().forEach(addIncidentToList);
-        updateChart();
-        updateWatchlist();
-        togglePdfButtonState();
-    });
+    Object.values(incidents).flat().forEach(addIncidentToList);
+    updateChart();
+    updateWatchlist();
+    togglePdfButtonState();
 
     // Voice Recording Functionality
     let mediaRecorder;
