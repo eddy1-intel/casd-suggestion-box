@@ -233,7 +233,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="review-options">
                         <button class="reviewed-button" onclick="window.opener.removeIncident(${incident.id}, ${incident.severity}); window.opener.watchlist.reviewed += 1; window.opener.updateWatchlist(); window.close();">Reviewed</button>
                         <button class="check-later-button" onclick="window.opener.watchlist.checkLater += 1; window.opener.updateWatchlist(); alert('Marked for later review.');">Check Later</button>
-                        <button class="escalate-button" onclick="window.opener.escalateIncident(${JSON.stringify(incident)}, document.querySelector('.comment-box').value); window.opener.watchlist.escalated += 1; window.opener.updateWatchlist();">Escalate</button>
+                        <button class="escalate-button" onclick="escalateIncident()">Escalate</button>
                     </div>
                 </div>
             </body>
