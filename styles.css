@@ -487,3 +487,35 @@ footer {
 .review-options {
     margin-top: 10px;
 }
+
+/* Modal for role and date selection */
+.modal {
+    display: block;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    overflow: auto;
+}
+
+.modal-content {
+    background-color: white;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 50%;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    animation: animateModal 0.4s;
+}
+
+@keyframes animateModal {
+    from {top: -300px; opacity: 0}
+    to {top: 0; opacity: 1}
+}
+
+#main-container {
+    display: none;
+}
