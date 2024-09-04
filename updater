@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incident Management Platform</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Modal for choosing role and date -->
+    <div id="accessModal" class="modal">
+        <div class="modal-content">
+            <h2>Select Your Role and Enter the Date</h2>
+            <label for="role-select">Choose a Role:</label>
+            <select id="role-select">
+                <option value="" disabled selected>Select your role</option>
+                <option value="Front End">Front End</option>
+                <option value="Back End">Back End</option>
+                <option value="SSAFI">SSAFI</option>
+            </select>
+
+            <label for="date-input">Enter the Date:</label>
+            <input type="date" id="date-input" required>
+
+            <button id="accessSubmit">Submit</button>
+        </div>
+    </div>
+
+    <div class="container" id="main-container" style="display: none;">
+        <header>
+            <h1>Incident Management Platform</h1>
+        </header>
+        
+        <section id="incident-log" class="incident-log-section">
+            <h3>Log an Incident</h3>
+            <p id="user-role"></p>
+            <p id="log-date"></p>
+            <div class="log-form">
+                <label for="incident-details">Incident Details:</label>
+                <textarea id="incident-details" placeholder="Describe the incident here..."></textarea>
+                
+                <label for="incident-severity">Incident Severity:</label>
+                <select id="incident-severity">
+                    <option value="1">1 - Top Priority (Red Flag)</option>
+                    <option value="2">2 - Secondary Priority (Yellow Flag)</option>
+                    <option value="3">3 - Lowest Priority (Green Flag)</option>
+                </select>
+                
+                <label for="voice-record">Record a Voice Message:</label>
+                <button id="start-recording">Start Recording</button>
+                <button id="stop-recording" disabled>Stop Recording</button>
+                <audio id="audio-playback" controls></audio>
+                
+                <label for="screenshot-upload">Paste or Upload a Screenshot:</label>
+                <input type="file" id="screenshot-upload" accept="image/*">
+                <div id="screenshot-preview"></div>
+
+                <button id="submit-log">Submit Incident</button>
+            </div>
+        </section>
+
+        <section id="incident-examples" class="incident-examples-section">
+            <h3>Incident Examples</h3>
+            <div id="incident-list"></div>
+            <canvas id="incident-chart" width="300" height="300"></canvas>
+        </section>
+
+        <section id="incident-watchlist" class="incident-watchlist-section">
+            <h3>Incident Watchlist</h3>
+            <div id="watchlist"></div>
+        </section>
+
+        <footer>
+            <button id="download-pdf">Download PDF</button>
+            <p>© 2024 Incident Management Platform. All Rights Reserved.</p>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+/* Modal for role and date selection */
+.modal {
+    display: block;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    overflow: auto;
+}
+
+.modal-content {
+    background-color: white;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 50%;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    animation: animateModal 0.4s;
+}
+
+@keyframes animateModal {
+    from {top: -300px; opacity: 0}
+    to {top: 0; opacity: 1}
+}
+
+#main-container {
+    display: none;
+}
+
+
+
+
+
+
+
+
+
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    let incidents = JSON.parse(localStorage.getItem('incidents')) || { 1: [], 2: [], 3: [] };
+    let watchlist = JSON.parse(localStorage.getItem('watchlist')) || { reviewed: 0, escalated: 0, checkLater: 0 };
+
+    const incidentList = document.getElementById('incident-list');
+    const submitLogButton = document.getElementById('submit-log');
+    const incidentDetailsInput = document.getElementById('incident-details');
+    const incidentSeverityInput = document.getElementById('incident-severity');
+    const audioPlayback = document.getElementById('audio-playback');
+    const screenshotPreview = document.getElementById('screenshot-preview');
+    const downloadPdfButton = document.getElementById('download-pdf');
+    const watchlistContainer = document.getElementById('watchlist');
+
+    const accessModal = document.getElementById('accessModal');
+    const roleSelect = document.getElementById('role-select');
+    const dateInput = document.getElementById('date-input');
+    const accessSubmitButton = document.getElementById('accessSubmit');
+    const mainContainer = document.getElementById('main-container');
+    const userRole = document.getElementById('user-role');
+    const logDate = document.getElementById('log-date');
+
+    // Handle access modal submission
+    accessSubmitButton.addEventListener('click', () => {
+        const role = roleSelect.value;
+        const date = dateInput.value;
+
+        if (role && date) {
+            userRole.innerHTML = `Role: ${role}`;
+            logDate.innerHTML = `Date: ${date}`;
+
+            // Hide the modal and show the main content
+            accessModal.style.display = 'none';
+            mainContainer.style.display = 'block';
+        } else {
+            alert('Please select a role and enter a valid date.');
+        }
+    });
+
+    // Incident logging and other functionalities continue here (unchanged from the previous code)
+    // Rest of your existing script.js code remains unchanged.
+});
