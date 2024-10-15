@@ -57,14 +57,32 @@ These additional features could further optimize the shift handover process, mak
 
 
 
-Take out the role option for now. Users should be able to choose by segment FE, SSAFI or BE and date before gettting access to the main page. next users should be able to input CEID, Incident details, incident severity, record a voice message, upload a screen shot or snippet in the text box and submit incident. add functionality to allow users to delete voice messages before they are saved. 
+Remove the role option: Instead of selecting a role, users will now choose between the segments "FE," "SSAFI," or "BE" and provide a date before gaining access to the main page.
 
-Change the incident example section to incident watchlist. add an option to search among all submitted incidents. remember, if an incident was recorded as top priority, it will have a red, background, if second it shouuld be yellow and if lowest priority, it should be green. all incidents subited should have their respective CEID's as the heading to help the search functionality. Do not forget to include a piechart on the side that shows a percentage of the different type of entities submitted in realtime. 
+Incident Submission Form:
 
-Every incident submitted is to have a green button for reviewed that when clicked, takes it out of the incident watchlist, or escalate, that when clicked copies that incident and takes the user to an email form so they can escalate to the appropriate party through email. 
+The form will allow users to input a CEID, Incident details, and Incident severity.
+Add the ability to record and delete voice messages before submission.
+Users can upload screenshots or text snippets directly into the system.
+Incident Watchlist:
 
-in the pull reports section, users should be able to pull reports by role (FE, SSAFI or BE), Date submitted and specific severity levels or all severities. Once the pull report option is clicked, this data should appear in a section below. 
+Convert the existing incident example section to an incident watchlist where all submitted incidents are displayed.
+Incidents will have a background color based on severity (red for top priority, yellow for secondary, green for the lowest).
+Each incident will display its respective CEID as the heading to improve search functionality.
+Users will be able to search all submitted incidents by keywords or CEID.
+Real-Time Pie Chart:
 
-at the very bottom of the page, the should be a download pdf buttton, that when clicked, allows the user to download all incidents entered on the present day in a chronological order. 
+Add a real-time pie chart on the side to show the percentages of the different types of incidents submitted.
+Incident Actions:
+
+Each incident will have a green button labeled "Reviewed" that will remove it from the incident watchlist when clicked.
+There will also be an "Escalate" button that, when clicked, will open an email form with the incident data prefilled so it can be escalated to the appropriate party.
+Pull Reports Section:
+
+Users will be able to pull reports by segment (FE, SSAFI, or BE), date, and severity level.
+The pulled reports will appear below the report selection options.
+Download PDF:
+
+At the bottom of the page, there will be a Download PDF button that allows users to download all incidents entered on the present day in chronological order.
 
 
