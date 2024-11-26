@@ -1,88 +1,22 @@
-1. **Web Application Development**:
-   - **User Authentication**: Employees should have secure logins to access and update the system. You could implement role-based access, where certain users can only view updates while others can add or modify them.
-   - **Real-Time Updates**: The application should allow users to log updates as incidents occur or as shifts progress. This way, information is always current.
-   - **Categorization and Prioritization**: You can include categories (e.g., incidents, priorities, tools, lots to watch) and priority levels for each update. This will help the incoming shift focus on the most critical issues first.
-   - **Search and Filter**: Include features to search and filter updates based on time, category, priority, etc., making it easier for the next shift to find relevant information quickly.
-   - **Notifications**: The system could send notifications or summaries to the next shift before they start, highlighting key updates.
-   - **Audit Trail**: Maintain an audit trail to track who logged each update and when. This can be useful for accountability and review purposes.
+I need to update this line of code so that it pulls specific texts if there is text available associated with the SPL_INPUT for example, instead of pulling text like this "Tools required to hit REV_CAP: 18 When will toolset be Rev_Cap Capable? 1000 Tool Status: 17/20 Tool Details: 726.2 PMA recovery. NDT: 0930 726.3 SS OOC, RFC2 IP. NDT: 1000 743.2 PMA recovery. NDT:1100 Ramp Tools / CFD / Fung / Bagged tools: LAT714 - Mom UTP with AL3 down - LP t/s second half of S7 714.1 Unbagging, waiting on HB2 GCOLs data, tagged for EB1 L4471380 L4471370 714.2 E3 recovery and cycling i/p, UP for EB1 need to target BB1 and BB2 next. 726.1 ESC replacement recovery. MZ cal completed, then needs full mons, targeting, and GCOLs. BCETU: 11/22 Help needed? ___ When will INV <= Goal ___ (Include if toolset is in L1TF) EOW Projection: ___ (Include if toolset is in L1TF) Staffing % current shift:90% Staffing % next shift:80%"
 
-2. **User Interface**:
-   - **Dashboard**: Create a dashboard that provides a summary of critical updates, ongoing issues, and resolved incidents at a glance.
-   - **Detailed Views**: Allow users to click on items in the dashboard for more detailed information, including any actions taken or required.
+instead, pull data like 
+ Tools required to hit REV_CAP:18
+When will toolset be Rev_Cap Capable?1000
+Tool Status: 17/20
+Tool details:  726.2 PMA recovery. NDT: 0930 726.3 SS OOC, RFC2 IP. NDT: 1000 743.2 PMA recovery. NDT:1100 Ramp Tools / CFD / Fung / Bagged tools: LAT714 - Mom UTP with AL3 down - LP t/s second half of S7 714.1 Unbagging, waiting on HB2 GCOLs data, tagged for EB1 L4471380 L4471370 714.2 E3 recovery and cycling i/p, UP for EB1 need to target BB1 and BB2 next. 726.1 ESC replacement recovery. MZ cal completed, then needs full mons, targeting, and GCOLs. BCETU: 11/22 Help needed?
 
-3. **Integration with Existing Tools**:
-   - If your department uses any specific tools for tracking or monitoring, consider integrating these with the application to automatically pull relevant data.
+It should not show anything after Help needed? ___ When will INV <= Goal ___ (Include if toolset is in L1TF) EOW Projection: ___ (Include if toolset is in L1TF) Staffing % current shift:90% Staffing % next shift:80%"
 
-4. **Implementation and Training**:
-   - After developing the application, ensure that all employees are trained on how to use it effectively.
-   - Consider running the system in parallel with the existing pass down meetings for a trial period to smooth the transition.
-
-By implementing this system, you can significantly reduce the time spent in meetings, improve the efficiency of information transfer, and allow employees to focus more on their tasks rather than sitting through lengthy discussions.
-
-Here are a few additional features and ideas you could consider adding to enhance the effectiveness of the web application:
-
-1. **Shift Summary Reports**:
-   - **Automated Summaries**: The system could automatically generate a shift summary report at the end of each shift, compiling all the logged updates. This report could be emailed to the incoming shift team as a quick reference before they start.
-
-2. **Interactive Timeline or Log**:
-   - **Chronological Log**: Implement an interactive timeline or chronological log where users can see updates in the order they were logged. This can help in understanding the sequence of events, especially during critical incidents.
-
-3. **Incident Escalation Workflow**:
-   - **Escalation Alerts**: For critical issues that require immediate attention or decision-making, the system could include an escalation feature. This would notify the relevant supervisors or managers through SMS, email, or app notifications, ensuring urgent issues are addressed promptly.
-
-4. **Analytics and Reporting**:
-   - **Trend Analysis**: Incorporate analytics to track trends over time, such as recurring issues with specific tools or lots. This can help in identifying problem areas that need long-term solutions.
-   - **Performance Metrics**: Track and report on key performance indicators (KPIs), such as response times to incidents or resolution times, to help improve operational efficiency.
-
-5. **Knowledge Base Integration**:
-   - **Reference Materials**: Integrate a knowledge base where employees can access documentation, SOPs, or past incidents for reference. This can be particularly useful for troubleshooting recurring issues or for new employees.
-
-6. **Collaboration Features**:
-   - **Comments and Discussions**: Allow users to comment on updates or discuss them within the system. This could replace some of the back-and-forth that typically happens in meetings, keeping all relevant discussion attached to the update itself.
-   - **Tagging**: Users could tag specific colleagues in updates or comments if they need to draw attention to a particular issue.
-
-7. **Mobile Access**:
-   - **Mobile-Friendly Design**: Ensure that the application is mobile-friendly or has a dedicated mobile app, allowing employees to log or check updates even when they are not at their desks.
-
-8. **Shift Handover Checklist**:
-   - **Checklist Feature**: Include a checklist that the outgoing team must complete before logging off. This ensures that no critical information is missed during the shift handover.
-
-9. **Integration with Incident Management Systems**:
-   - If your department already uses an incident management or ticketing system (like JIRA, ServiceNow, etc.), you could integrate this with your pass down application to automatically sync relevant incidents and their statuses.
-
-10. **Customizable Dashboards**:
-    - **Personalization**: Allow users to customize their dashboard based on their role or personal preference. For example, a supervisor might want to see an overview of all lots and tools, while an operator might focus on their specific areas of responsibility.
-
-These additional features could further optimize the shift handover process, making it even more efficient and reducing the potential for communication gaps.
-
-
-
-Remove the role option: Instead of selecting a role, users will now choose between the segments "FE," "SSAFI," or "BE" and provide a date before gaining access to the main page.
-
-Incident Submission Form:
-
-The form will allow users to input a CEID, Incident details, and Incident severity.
-Add the ability to record and delete voice messages before submission.
-Users can upload screenshots or text snippets directly into the system.
-Incident Watchlist:
-
-Convert the existing incident example section to an incident watchlist where all submitted incidents are displayed.
-Incidents will have a background color based on severity (red for top priority, yellow for secondary, green for the lowest).
-Each incident will display its respective CEID as the heading to improve search functionality.
-Users will be able to search all submitted incidents by keywords or CEID.
-Real-Time Pie Chart:
-
-Add a real-time pie chart on the side to show the percentages of the different types of incidents submitted.
-Incident Actions:
-
-Each incident will have a green button labeled "Reviewed" that will remove it from the incident watchlist when clicked.
-There will also be an "Escalate" button that, when clicked, will open an email form with the incident data prefilled so it can be escalated to the appropriate party.
-Pull Reports Section:
-
-Users will be able to pull reports by segment (FE, SSAFI, or BE), date, and severity level.
-The pulled reports will appear below the report selection options.
-Download PDF:
-
-At the bottom of the page, there will be a Download PDF button that allows users to download all incidents entered on the present day in chronological order.
-
+code provided for reference 
+ // Ensure all data sets are included
+            const structuredData = jsonData.map((item) => ({
+                FACILITY: item.FACILITY || " ",
+                PROCESS: item.PROCESS || " ",
+                CEID: item.CEID || " ",
+                WSE_CS: item.WSE_CS || " ",
+                WSE_CW: item.WSE_CW || " ",
+                LIMITER_SPL: item.LIMITER_SPL || " ",
+                SPL_INPUT: item.SPL_INPUT || " ",
+            }));
 
