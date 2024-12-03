@@ -1,22 +1,335 @@
-I need to update this line of code so that it pulls specific texts if there is text available associated with the SPL_INPUT for example, instead of pulling text like this "Tools required to hit REV_CAP: 18 When will toolset be Rev_Cap Capable? 1000 Tool Status: 17/20 Tool Details: 726.2 PMA recovery. NDT: 0930 726.3 SS OOC, RFC2 IP. NDT: 1000 743.2 PMA recovery. NDT:1100 Ramp Tools / CFD / Fung / Bagged tools: LAT714 - Mom UTP with AL3 down - LP t/s second half of S7 714.1 Unbagging, waiting on HB2 GCOLs data, tagged for EB1 L4471380 L4471370 714.2 E3 recovery and cycling i/p, UP for EB1 need to target BB1 and BB2 next. 726.1 ESC replacement recovery. MZ cal completed, then needs full mons, targeting, and GCOLs. BCETU: 11/22 Help needed? ___ When will INV <= Goal ___ (Include if toolset is in L1TF) EOW Projection: ___ (Include if toolset is in L1TF) Staffing % current shift:90% Staffing % next shift:80%"
+We have been working on this project for long and at this point i would like to be done with the program.
+The Side bar should be updated properly so that it is functional in related to json file. From the top 
+if the user chooses Area, instead of fist from the radio button display a hover board that says coming soon. 
+if the user chooses fist, the process drop down should allow the user to multi select from 1272, 1273, 1274, 1275. 
+This data set is in relation to PROCESS in the json file. Next, the user should be able to choose between 
+F42 & F28 in the fab section. and this is associated with FACILITY in the data set, next, in the Fist drop down,
+allow the user to multi select between All, BE-LL, BE-UL, CON, FIN, GATE, PCT, PLY-ESD, SSAFI and this options 
+are associated with FIST_P in the data set. Next, in the last dropdown, the user should be able to multi select from All,
+Limiter, Not Limiter, Recovery, Watch and these slections are associated with TARGET_ML in the data set. Once the user clicks apply filter,
+the main content should display data for PROCESS, FIST_P, CEID, ENTITY_UP_VS_TOTAL, WSE_CS, WSE_CW, SPL_INPUT, TARGET_ML, LIMITER_SPL, also, 
+add an extra column at the end of the table with a pencil icon allowing users to edith rows pulled from the data set. 
 
-instead, pull data like 
- Tools required to hit REV_CAP:18
-When will toolset be Rev_Cap Capable?1000
-Tool Status: 17/20
-Tool details:  726.2 PMA recovery. NDT: 0930 726.3 SS OOC, RFC2 IP. NDT: 1000 743.2 PMA recovery. NDT:1100 Ramp Tools / CFD / Fung / Bagged tools: LAT714 - Mom UTP with AL3 down - LP t/s second half of S7 714.1 Unbagging, waiting on HB2 GCOLs data, tagged for EB1 L4471380 L4471370 714.2 E3 recovery and cycling i/p, UP for EB1 need to target BB1 and BB2 next. 726.1 ESC replacement recovery. MZ cal completed, then needs full mons, targeting, and GCOLs. BCETU: 11/22 Help needed?
+Below is my sidebar code 
+import React, { useState } from "react";
+import Dropdown from "./Dropdown";
+import "./Sidebar.css";
 
-It should not show anything after Help needed? ___ When will INV <= Goal ___ (Include if toolset is in L1TF) EOW Projection: ___ (Include if toolset is in L1TF) Staffing % current shift:90% Staffing % next shift:80%"
+const Sidebar = ({ onApplyFilters }) => {
+    const [selection, setSelection] = useState("Fist");
+    const [filters, setFilters] = useState({
+        process: [], // Maps to PROCESS in the JSON
+        fab: "", // Maps to FACILITY in the JSON
+        fist: [], // Maps to FIST_P in the JSON
+        area: "", // Used if selection is Area
+        status: [], // Maps to LIMITER_SPL in the JSON
+    });
 
-code provided for reference 
- // Ensure all data sets are included
-            const structuredData = jsonData.map((item) => ({
-                FACILITY: item.FACILITY || " ",
-                PROCESS: item.PROCESS || " ",
-                CEID: item.CEID || " ",
-                WSE_CS: item.WSE_CS || " ",
-                WSE_CW: item.WSE_CW || " ",
-                LIMITER_SPL: item.LIMITER_SPL || " ",
-                SPL_INPUT: item.SPL_INPUT || " ",
-            }));
+    // Handle radio button change (Fist or Area)
+    const handleRadioChange = (e) => {
+        const value = e.target.value;
+        setSelection(value);
+        setFilters((prev) => ({
+            ...prev,
+            fist: value === "Fist" ? prev.fist : [],
+            area: value === "Area" ? prev.area : "",
+        }));
+    };
 
+    // Update individual filters
+    const updateFilter = (key, value) => {
+        setFilters((prev) => ({ ...prev, [key]: value }));
+    };
+
+    // Apply filters and notify parent component
+    const applyFilters = () => {
+        // Prepare filters to send to MainContent
+        const preparedFilters = {
+            process: filters.process,
+            fab: filters.fab,
+            fist: selection === "Fist" ? filters.fist : null, // Only include Fist if selected
+            area: selection === "Area" ? filters.area : null, // Only include Area if selected
+            status: filters.status,
+        };
+
+        onApplyFilters(preparedFilters);
+    };
+
+    return (
+        <div className="sidebar">
+            <h2>Filters</h2>
+            <div className="radio-group">
+                <label>
+                    <input
+                        type="radio"
+                        name="filterType"
+                        value="Fist"
+                        checked={selection === "Fist"}
+                        onChange={handleRadioChange}
+                    />
+                    Fist
+                </label>
+                <label>
+                    <input
+                        type="radio"
+                        name="filterType"
+                        value="Area"
+                        checked={selection === "Area"}
+                        onChange={handleRadioChange}
+                    />
+                    Area
+                </label>
+            </div>
+            <Dropdown
+                label="Process"
+                options={["1272", "1273", "1274", "1275"]}
+                isMultiSelect={true}
+                onSelect={(selected) => updateFilter("process", selected)}
+            />
+            <Dropdown
+                label="Fab"
+                options={["F28", "F42"]}
+                isMultiSelect={false}
+                onSelect={(selected) => updateFilter("fab", selected)}
+            />
+            {selection === "Fist" ? (
+                <Dropdown
+                    label="Fist"
+                    options={["ALL", "BE-LL", "BE-UL", "CON", "FIN"]}
+                    isMultiSelect={true}
+                    onSelect={(selected) => updateFilter("fist", selected)}
+                />
+            ) : (
+                <Dropdown
+                    label="Area"
+                    options={["ALL", "Diffusion", "Etch", "Lithography", "WetEtch"]}
+                    isMultiSelect={false}
+                    onSelect={(selected) => updateFilter("area", selected)}
+                />
+            )}
+            <Dropdown
+                label="Status"
+                options={["ALL", "Limiter", "Not Limiter", "Watch"]}
+                isMultiSelect={true}
+                onSelect={(selected) => updateFilter("status", selected)}
+            />
+            <button className="apply-filters-button" onClick={applyFilters}>
+                Apply Filters
+            </button>
+        </div>
+    );
+};
+
+export default Sidebar;
+
+below is my main content code 
+
+import React, { useState, useEffect } from "react";
+import "./MainContent.css";
+
+const MainContent = ({ filters }) => {
+    const [data, setData] = useState([]);
+    const [filteredData, setFilteredData] = useState([]);
+    const [filterSelections, setFilterSelections] = useState({
+        facility: "All",
+        process: "All",
+        ceid: "All",
+        limiter_spl: "All",
+    });
+    const [uniqueValues, setUniqueValues] = useState({
+        facility: [],
+        process: [],
+        ceid: [],
+        limiter_spl: [],
+    });
+    const [error, setError] = useState(null);
+
+    const fetchData = async () => {
+        try {
+            const response = await fetch("/classification_data.json");
+            if (!response.ok) {
+                throw new Error("Failed to load JSON data");
+            }
+
+            const jsonData = await response.json();
+
+            // Ensure all data sets are included
+            const structuredData = jsonData.map((item) => {
+                let splInput = item.SPL_INPUT || " ";
+            
+                // Extract text up to "Help needed?"
+                if (splInput.includes("Help needed?")) {
+                    splInput = splInput.split("Help needed?")[0].trim();
+                }
+            
+                return {
+                    FACILITY: item.FACILITY || " ",
+                    PROCESS: item.PROCESS || " ",
+                    CEID: item.CEID || " ",
+                    WSE_CS: item.WSE_CS || " ",
+                    WSE_CW: item.WSE_CW || " ",
+                    LIMITER_SPL: item.LIMITER_SPL || " ",
+                    SPL_INPUT: splInput,
+                };
+            });
+
+            setData(structuredData);
+            setFilteredData(structuredData);
+            initializeUniqueValues(structuredData);
+            setError(null);
+        } catch (err) {
+            console.error("Error loading data:", err);
+            setError("Unable to load data from the JSON file.");
+        }
+    };
+
+    const initializeUniqueValues = (data) => {
+        const facilities = ["All", ...new Set(data.map((item) => item.FACILITY))];
+        const processes = ["All", ...new Set(data.map((item) => item.PROCESS))];
+        const ceids = ["All", ...new Set(data.map((item) => item.CEID))];
+        const limiterSpls = ["All", ...new Set(data.map((item) => item.LIMITER_SPL))];
+        setUniqueValues({ facility: facilities, process: processes, ceid: ceids, limiter_spl: limiterSpls });
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, []);
+
+    useEffect(() => {
+        applyFilters();
+    }, [filterSelections]);
+
+    const applyFilters = () => {
+        let updatedData = [...data];
+
+        if (filterSelections.facility !== "All") {
+            updatedData = updatedData.filter(
+                (row) => row.FACILITY === filterSelections.facility
+            );
+        }
+
+        if (filterSelections.process !== "All") {
+            updatedData = updatedData.filter(
+                (row) => row.PROCESS === filterSelections.process
+            );
+        }
+
+        if (filterSelections.ceid !== "All") {
+            updatedData = updatedData.filter(
+                (row) => row.CEID === filterSelections.ceid
+            );
+        }
+
+        if (filterSelections.limiter_spl !== "All") {
+            updatedData = updatedData.filter(
+                (row) => row.LIMITER_SPL === filterSelections.limiter_spl
+            );
+        }
+
+        setFilteredData(updatedData);
+    };
+
+    const handleFilterChange = (key, value) => {
+        setFilterSelections((prev) => ({
+            ...prev,
+            [key]: value,
+        }));
+    };
+
+    return (
+        <div className="main-content">
+            {error && <p className="error-message">{error}</p>}
+
+            <div className="table-wrapper">
+                {filteredData.length > 0 ? (
+                    <table className="data-table">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Facility
+                                    <select
+                                        onChange={(e) =>
+                                            handleFilterChange("facility", e.target.value)
+                                        }
+                                        value={filterSelections.facility}
+                                    >
+                                        {uniqueValues.facility.map((facility) => (
+                                            <option key={facility} value={facility}>
+                                                {facility}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </th>
+                                <th>
+                                    Process
+                                    <select
+                                        onChange={(e) =>
+                                            handleFilterChange("process", e.target.value)
+                                        }
+                                        value={filterSelections.process}
+                                    >
+                                        {uniqueValues.process.map((process) => (
+                                            <option key={process} value={process}>
+                                                {process}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </th>
+                                <th>
+                                    CEID
+                                    <select
+                                        onChange={(e) =>
+                                            handleFilterChange("ceid", e.target.value)
+                                        }
+                                        value={filterSelections.ceid}
+                                    >
+                                        {uniqueValues.ceid.map((ceid) => (
+                                            <option key={ceid} value={ceid}>
+                                                {ceid}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </th>
+                                <th>Day pace</th>
+                                <th>WEEK PACE</th>
+                                <th>
+                                    ML DECISION
+                                    <select
+                                        onChange={(e) =>
+                                            handleFilterChange("limiter_spl", e.target.value)
+                                        }
+                                        value={filterSelections.limiter_spl}
+                                    >
+                                        {uniqueValues.limiter_spl.map((limiter) => (
+                                            <option key={limiter} value={limiter}>
+                                                {limiter}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </th>
+                                <th>USER INPUT</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {filteredData.map((row, index) => (
+                                <tr key={index} className={row.LIMITER_SPL === "Limiter" ? "limiter" : ""}>
+                                    <td>{row.FACILITY}</td>
+                                    <td>{row.PROCESS}</td>
+                                    <td>{row.CEID}</td>
+                                    <td>{row.WSE_CS}</td>
+                                    <td>{row.WSE_CW}</td>
+                                    <td>{row.LIMITER_SPL}</td>
+                                    <td>{row.SPL_INPUT}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                ) : (
+                    <p>No data to display. Adjust filters to refine your results.</p>
+                )}
+            </div>
+        </div>
+    );
+};
+
+export default MainContent;
